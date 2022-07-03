@@ -1,12 +1,14 @@
 -- COUNT
 -- Retrieve the number of rows from the "FilmLocations" table.
-   SELECT COUNT(Locations) FROM FilmLocations WHERE Writer="James Cameron";
-	 
+   SELECT COUNT(Locations) 
+   FROM FilmLocations 
+   WHERE Writer="James Cameron";
+   
 -- Retrieve the number of rows having a release year older than 1950 from the "FilmLocations" table.
    SELECT Count(*) FROM FilmLocations WHERE ReleaseYear<1950;
 	
 	
--- DISTINCT
+-- DISTINCT 
 -- Retrieve the name of all films without any repeated titles.
    SELECT DISTINCT Title FROM FilmLocations;
 	
@@ -43,8 +45,8 @@
    
 -- Update the city and country for Doe with id 5 to Dubai and AE respectively.
    UPDATE Instructor 
-SET city='Dubai', country='AE' 
-WHERE ins_id=5;
+   SET city='Dubai', country='AE' 
+   WHERE ins_id=5;
 
 
 -- DELETE
@@ -182,9 +184,95 @@ Query C5: Enter a function that displays the length of time the animals have bee
           the difference between today’s date and the recue date.
 select (CURRENT DATE - RESCUEDATE) from PETRESCUE;
 
+            
+	    Sub-queries and Nested SELECTs
+	    
+Execute a working query using a sub-select to retrieve all employees records whose salary is lower than the average salary.
+
+Solution
+select EMP_ID, F_NAME, L_NAME, SALARY 
+from employees 
+where SALARY < (select AVG(SALARY) 
+                from employees);
+
+Execute a Column Expression that retrieves all employees records with EMP_ID, SALARY and maximum salary as MAX_SALARY in every row.
+
+Solution
+select EMP_ID, SALARY, ( select MAX(SALARY) from employees ) AS MAX_SALARY 
+from employees;
+
+Execute a Table Expression for the EMPLOYEES table that excludes columns with sensitive employee data (i.e. does not include columns: SSN, B_DATE, SEX, ADDRESS, SALARY).
+
+Solution
+select * 
+from ( select EMP_ID, F_NAME, L_NAME, DEP_ID from employees) AS EMP4ALL;
 
 
-   
+
+Exercise 1: Accessing Multiple Tables with Sub-Queries
+
+Problem:
+Retrieve only the EMPLOYEES records that correspond to jobs in the JOBS table.
+Solution
+select * 
+from employees 
+where JOB_ID IN (select JOB_IDENT from jobs);
+
+Problem:
+Retrieve only the list of employees whose JOB_TITLE is Jr. Designer.
+Solution
+select * 
+from employees 
+where JOB_ID IN (select JOB_IDENT from jobs where JOB_TITLE= 'Jr. Designer');
+
+Problem:
+Retrieve JOB information and who earn more than $70,000.
+Solution
+select JOB_TITLE, MIN_SALARY,MAX_SALARY,JOB_IDENT 
+from jobs 
+where JOB_IDENT IN (select JOB_ID from employees where SALARY > 70000 );
+
+Problem:
+Retrieve JOB information and whose birth year is after 1976.
+Solution
+select JOB_TITLE, MIN_SALARY,MAX_SALARY,JOB_IDENT 
+from jobs 
+where JOB_IDENT IN (select JOB_ID from employees where YEAR(B_DATE)>1976 );
+
+Problem:
+Retrieve JOB information for female employees whose birth year is after 1976.
+Solution
+select JOB_TITLE, MIN_SALARY,MAX_SALARY,JOB_IDENT 
+from jobs 
+where JOB_IDENT IN (select JOB_ID from employees where YEAR(B_DATE)>1976 and SEX='F' );
+
+
+Exercise 2: Accessing Multiple Tables with Implicit Joins
+
+Problem:
+Perform an implicit cartesian/cross join between EMPLOYEES and JOBS tables.
+Solution
+select * from employees, jobs;
+
+Problem:
+Retrieve only the EMPLOYEES records that correspond to jobs in the JOBS table.
+Solution
+select * from employees, jobs where employees.JOB_ID = jobs.JOB_IDENT;
+
+Problem:
+Redo the previous query, using shorter aliases for table names.
+Solution
+select * from employees E, jobs J where E.JOB_ID = J.JOB_IDENT;
+
+Problem:
+Redo the previous query, but retrieve only the Employee ID, Employee Name and Job Title.
+Solution
+select EMP_ID,F_NAME,L_NAME, JOB_TITLE from employees E, jobs J where E.JOB_ID = J.JOB_IDENT;
+
+Problem:
+Redo the previous query, but specify the fully qualified column names with aliases in the SELECT clause.
+Solution
+select E.EMP_ID,E.F_NAME,E.L_NAME, J.JOB_TITLE from employees E, jobs J where E.JOB_ID = J.JOB_IDENT;
 
                    
 		     
