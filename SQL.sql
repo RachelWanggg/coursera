@@ -89,6 +89,12 @@ SELECT *
 FROM EMPLOYEES
 WHERE (SALARY BETWEEN 60000 AND 70000) AND DEP_ID = 5;
 
+-- remove the '%' sign from the above result set for Average Student Attendance column
+SELECT Name_of_School, REPLACE(Average_Student_Attendance, '%', '')
+from SCHOOLS 
+order by Average_Student_Attendance
+fetch first 5 rows only
+
 
                          Sorting
 -- Retrieve a list of employees ordered in descending order by department ID
